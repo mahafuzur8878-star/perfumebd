@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorHandler';
 // Routes
 import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
+import productRoutes from './modules/products/product.routes';
 
 const app = express();
 
@@ -70,6 +71,7 @@ app.use('/api/v1/auth', authLimiter);
 // 8. Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/products', productRoutes);
 
 // 9. Central error handler
 app.use(errorHandler);
