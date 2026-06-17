@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { User, Mail, MapPin, Award, Star, History, CalendarClock, ShieldCheck, Heart, Edit3, Save, Plus, Trash2, Calendar, ChevronDown, ChevronUp, Package, Receipt, Truck, Check } from "lucide-react";
+import { User, Mail, MapPin, Award, Star, History, CalendarClock, ShieldCheck, Heart, Edit3, Save, Plus, Trash2, Calendar, ChevronDown, ChevronUp, Package, Receipt, Truck, Check, LogOut, UserMinus } from "lucide-react";
 import { UserProfile, Order, Consultation, Product } from "../types";
 import { PRODUCTS } from "../data";
 
@@ -15,6 +15,9 @@ interface ProfileViewProps {
   consultations: Consultation[];
   setConsultations: (consultation: Consultation[]) => void;
   onQuickView: (product: Product) => void;
+  setIsAuthenticated: (val: boolean) => void;
+  setCurrentView: (view: string) => void;
+  setOrders: (orders: Order[]) => void;
 }
 
 export default function ProfileView({
@@ -23,7 +26,10 @@ export default function ProfileView({
   orders,
   consultations,
   setConsultations,
-  onQuickView
+  onQuickView,
+  setIsAuthenticated,
+  setCurrentView,
+  setOrders
 }: ProfileViewProps) {
   // Editing states
   const [isEditing, setIsEditing] = useState(false);
@@ -97,6 +103,30 @@ export default function ProfileView({
       ...profile,
       signatureScentId: e.target.value
     });
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentView("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDeleteAccount = () => {
+    if (window.confirm("Are you sure you want to permanently delete your account? This action cannot be reversed.")) {
+      setProfile({
+        name: "",
+        email: "",
+        avatar: "",
+        shippingAddress: "",
+        signatureScentId: "",
+        notesSaved: []
+      });
+      setOrders([]);
+      setConsultations([]);
+      setIsAuthenticated(false);
+      setCurrentView("home");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -173,7 +203,7 @@ export default function ProfileView({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+              <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="edit-name-input">
                 Full Name
               </label>
               <input
@@ -183,11 +213,13 @@ export default function ProfileView({
                 onChange={(e) => setEditedName(e.target.value)}
                 className="w-full bg-white border border-brand-dark/15 focus:border-brand-orange rounded-none px-3 py-2 text-xs focus:outline-none font-bold"
                 id="edit-name-input"
+                title="Full Name"
+                placeholder="Full Name"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+              <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="edit-email-input">
                 Email Address
               </label>
               <input
@@ -197,12 +229,14 @@ export default function ProfileView({
                 onChange={(e) => setEditedEmail(e.target.value)}
                 className="w-full bg-white border border-brand-dark/15 focus:border-brand-orange rounded-none px-3 py-2 text-xs focus:outline-none font-bold"
                 id="edit-email-input"
+                title="Email Address"
+                placeholder="Email Address"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+            <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="edit-address-input">
               Mansion Shipping Address
             </label>
             <textarea
@@ -212,6 +246,8 @@ export default function ProfileView({
               onChange={(e) => setEditedAddress(e.target.value)}
               className="w-full bg-white border border-brand-dark/15 focus:border-brand-orange rounded-none px-3 py-2 text-xs focus:outline-none resize-none font-bold"
               id="edit-address-input"
+              title="Mansion Shipping Address"
+              placeholder="Mansion Shipping Address"
             />
           </div>
 
@@ -279,7 +315,7 @@ export default function ProfileView({
 
           {/* Signature Match Dropdwon selector */}
           <div className="space-y-1.5 pt-2 border-t border-brand-dark/15">
-            <label className="block text-[9.5px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+            <label className="block text-[9.5px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="signature-selector">
               Alter Signature Selection:
             </label>
             <select
@@ -287,6 +323,7 @@ export default function ProfileView({
               onChange={handleSignatureSelectChange}
               className="w-full bg-white border border-brand-dark/15 rounded-none px-2 py-2.5 text-xs text-brand-dark font-bold cursor-pointer focus:outline-none"
               id="signature-selector"
+              title="Alter Signature Selection"
             >
               {PRODUCTS.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -637,7 +674,7 @@ export default function ProfileView({
               
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+                  <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="schedule-date">
                     Schedule Date
                   </label>
                   <input
@@ -646,11 +683,13 @@ export default function ProfileView({
                     value={bookingDate}
                     onChange={(e) => setBookingDate(e.target.value)}
                     className="w-full bg-white border border-brand-dark/15 rounded-none px-2.5 py-1.5 text-xs focus:outline-none focus:border-brand-orange font-bold"
+                    id="schedule-date"
+                    title="Schedule Date"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+                  <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="schedule-time">
                     Hour (GMT+1)
                   </label>
                   <input
@@ -659,18 +698,22 @@ export default function ProfileView({
                     value={bookingTime}
                     onChange={(e) => setBookingTime(e.target.value)}
                     className="w-full bg-white border border-brand-dark/15 rounded-none px-2.5 py-1.5 text-xs focus:outline-none focus:border-brand-orange font-bold"
+                    id="schedule-time"
+                    title="Hour (GMT+1)"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+                <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="olfactory-inquiry-type">
                   Olfactory Inquiry Type
                 </label>
                 <select
                   value={bookingType}
                   onChange={(e: any) => setBookingType(e.target.value)}
                   className="w-full bg-white border border-brand-dark/15 rounded-none px-2.5 py-2 text-xs text-brand-dark font-bold cursor-pointer focus:outline-none focus:border-brand-orange"
+                  id="olfactory-inquiry-type"
+                  title="Olfactory Inquiry Type"
                 >
                   <option value="Olfactory Identity">Olfactory Identity Curation</option>
                   <option value="Wedding Scent Profiling">Bridal/Wedding Scent Profiling</option>
@@ -679,13 +722,15 @@ export default function ProfileView({
               </div>
 
               <div className="space-y-1">
-                <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold">
+                <label className="block text-[9px] tracking-widest uppercase font-mono text-brand-dark/45 font-bold" htmlFor="assigned-master-blender">
                   Assigned Master Blender
                 </label>
                 <select
                   value={bookingConsultant}
                   onChange={(e) => setBookingConsultant(e.target.value)}
                   className="w-full bg-white border border-brand-dark/15 rounded-none px-2.5 py-2 text-xs text-brand-dark font-bold cursor-pointer focus:outline-none focus:border-brand-orange"
+                  id="assigned-master-blender"
+                  title="Assigned Master Blender"
                 >
                   <option value="Sylvain Alarie">Sylvain Alarie (Grasse Lead)</option>
                   <option value="Gabrielle Moreau">Gabrielle Moreau (Aroma Chemist)</option>
@@ -731,6 +776,34 @@ export default function ProfileView({
 
         </div>
 
+      </div>
+
+      {/* 4. Account Administration Section */}
+      <div className="p-6 border border-brand-dark/15 bg-white rounded-none flex flex-col sm:flex-row justify-between items-center gap-6 animate-fadeIn">
+        <div className="space-y-1 text-center sm:text-left">
+          <span className="font-mono text-[10px] tracking-widest text-[#0c0c0c]/40 uppercase font-black">
+            Account Administration
+          </span>
+          <h3 className="font-sans font-black uppercase text-brand-dark text-xs tracking-[0.15em]">
+            Security & Data
+          </h3>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <button
+            onClick={handleLogout}
+            className="px-6 py-3 border border-brand-dark hover:border-brand-orange hover:text-brand-orange text-xs uppercase tracking-wider font-bold text-brand-dark bg-white rounded-none flex items-center justify-center space-x-1.5 transition-colors focus:outline-none cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Secure Logout</span>
+          </button>
+          <button
+            onClick={handleDeleteAccount}
+            className="px-6 py-3 border border-red-900/20 bg-red-900/5 hover:bg-red-900 hover:text-white text-xs uppercase tracking-wider font-bold text-red-900 rounded-none flex items-center justify-center space-x-1.5 transition-colors focus:outline-none cursor-pointer"
+          >
+            <UserMinus className="w-3.5 h-3.5" />
+            <span>Delete Account</span>
+          </button>
+        </div>
       </div>
 
     </div>

@@ -223,6 +223,9 @@ export default function App() {
             consultations={consultations}
             setConsultations={setConsultations}
             onQuickView={handleOpenQuickView}
+            setIsAuthenticated={setIsAuthenticated}
+            setCurrentView={setCurrentView}
+            setOrders={setOrders}
           />
         )}
 
