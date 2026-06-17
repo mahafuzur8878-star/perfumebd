@@ -12,6 +12,7 @@ import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
 import productRoutes from './modules/products/product.routes';
 import orderRoutes from './modules/orders/order.routes';
+import consultationRoutes from './modules/consultations/consultation.routes';
 
 const app = express();
 
@@ -74,6 +75,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/consultations', consultationRoutes);
 
 // 9. Central error handler
 app.use(errorHandler);
