@@ -13,7 +13,7 @@ export const updateProfileSchema = z.object({
 export const deleteProfileSchema = z.object({
   body: z.object({
     confirmationText: z.literal('DELETE', {
-      errorMap: () => ({ message: "Must type exactly 'DELETE' to confirm" })
+      message: "Must type exactly 'DELETE' to confirm"
     }),
   })
 });
