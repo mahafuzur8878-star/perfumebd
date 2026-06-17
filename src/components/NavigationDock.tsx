@@ -14,6 +14,7 @@ interface NavigationDockProps {
   setIsCartOpen: (open: boolean) => void;
   setIsSearchOpen: (open: boolean) => void;
   setIsQuizOpen: (open: boolean) => void;
+  isAuthenticated: boolean;
 }
 
 export default function NavigationDock({
@@ -22,7 +23,8 @@ export default function NavigationDock({
   cart,
   setIsCartOpen,
   setIsSearchOpen,
-  setIsQuizOpen
+  setIsQuizOpen,
+  isAuthenticated
 }: NavigationDockProps) {
   const totalCartCount = cart.reduce((acc, curr) => acc + curr.quantity, 0);
 
@@ -32,7 +34,7 @@ export default function NavigationDock({
     { id: "matcher", label: "Scent Matcher", icon: Sparkles, type: "action", action: () => setIsQuizOpen(true) },
     { id: "search", label: "Search", icon: Search, type: "action", action: () => setIsSearchOpen(true) },
     { id: "cart", label: "Scent Bag", icon: ShoppingBag, type: "action", action: () => setIsCartOpen(true), badge: totalCartCount },
-    { id: "profile", label: "Profile", icon: User, type: "view" },
+    { id: isAuthenticated ? "profile" : "login", label: "Profile", icon: User, type: "view" },
   ];
 
   const handleNavClick = (item: typeof navItems[number]) => {
@@ -55,7 +57,12 @@ export default function NavigationDock({
       >
         <div className="flex items-center justify-between sm:justify-around text-center gap-1 sm:gap-2">
           {navItems.map((item) => {
-            const isActive = item.type === "view" && currentView === item.id;
+            // For the profile/login tab, consider it active if currentView is login, signup, or profile.
+            const isProfileTab = item.icon === User;
+            const isActive = item.type === "view" && 
+              (isProfileTab 
+                ? (currentView === "profile" || currentView === "login" || currentView === "signup") 
+                : currentView === item.id);
             const Icon = item.icon;
             
             return (

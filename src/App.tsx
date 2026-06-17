@@ -18,6 +18,8 @@ import SearchOverlay from "./components/SearchOverlay";
 import CartSidebar from "./components/CartSidebar";
 import OlfactoryQuiz from "./components/OlfactoryQuiz";
 import NavigationDock from "./components/NavigationDock";
+import LoginView from "./views/LoginView";
+import SignupView from "./views/SignupView";
 
 export default function App() {
   // Navigation & Workspace views
@@ -34,6 +36,12 @@ export default function App() {
   const [cart, setCart] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem("perfume_bd_cart");
     return saved ? JSON.parse(saved) : [];
+  });
+
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const saved = localStorage.getItem("perfume_bd_auth");
+    return saved ? JSON.parse(saved) : false;
   });
 
   // Favorites (Scent library favorites) state
@@ -62,6 +70,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("perfume_bd_cart", JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("perfume_bd_auth", JSON.stringify(isAuthenticated));
+  }, [isAuthenticated]);
 
   useEffect(() => {
     localStorage.setItem("perfume_bd_favorites", JSON.stringify(favorites));
@@ -213,6 +225,26 @@ export default function App() {
             onQuickView={handleOpenQuickView}
           />
         )}
+
+        {currentView === "login" && (
+          <LoginView
+            setCurrentView={setCurrentView}
+            setIsAuthenticated={setIsAuthenticated}
+            setProfile={setProfile}
+            setOrders={setOrders}
+            setConsultations={setConsultations}
+          />
+        )}
+
+        {currentView === "signup" && (
+          <SignupView
+            setCurrentView={setCurrentView}
+            setIsAuthenticated={setIsAuthenticated}
+            setProfile={setProfile}
+            setOrders={setOrders}
+            setConsultations={setConsultations}
+          />
+        )}
       </main>
 
       {/* Flagship Brand Footer with Newsletter triggers */}
@@ -263,6 +295,7 @@ export default function App() {
         setIsCartOpen={setIsCartOpen}
         setIsSearchOpen={setIsSearchOpen}
         setIsQuizOpen={setIsQuizOpen}
+        isAuthenticated={isAuthenticated}
       />
 
     </div>
