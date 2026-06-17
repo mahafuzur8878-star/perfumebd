@@ -13,7 +13,7 @@ export const getMyOrders = async (req: Request, res: Response, next: NextFunctio
 
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await assertOwnership(Order, req.params.id, req.user?._id as string);
+    const order = await assertOwnership(Order, req.params.id as string, req.user?._id as string);
     if (order.isDeleted) {
       return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Order not found' } });
     }

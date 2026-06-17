@@ -26,7 +26,7 @@ export const createConsultation = async (req: Request, res: Response, next: Next
 
 export const cancelConsultation = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const consultation = await assertOwnership(Consultation, req.params.id, req.user?._id as string);
+    const consultation = await assertOwnership(Consultation, req.params.id as string, req.user?._id as string);
     if (consultation.isDeleted) {
       return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Consultation not found' } });
     }
